@@ -1,3 +1,4 @@
 io/rocketbase/keycloak/usersettings/UserSettingsProviderFactory.class
 io/rocketbase/keycloak/usersettings/UserWrapper.class
 io/rocketbase/keycloak/usersettings/UserSettingsProvider.class
+io/rocketbase/keycloak/usersettings/UserSettingsResource.class
