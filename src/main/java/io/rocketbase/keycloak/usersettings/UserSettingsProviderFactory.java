@@ -11,7 +11,7 @@ import org.keycloak.services.resource.RealmResourceProviderFactory;
  */
 public class UserSettingsProviderFactory implements RealmResourceProviderFactory {
 
-
+    // this will be the path: keycloakurl:port/auth/realms/your-realm/profile
     public static final String ID = "profile";
 
     public RealmResourceProvider create(KeycloakSession session) {

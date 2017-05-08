@@ -1,7 +1,8 @@
 package io.rocketbase.keycloak.usersettings;
 
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.keycloak.models.GroupModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserModel;
@@ -13,17 +14,16 @@ import java.util.stream.Collectors;
 /**
  * Created by mirco on 08.05.17.
  */
-class UserWrapper {
+public class UserWrapper {
 
     private final String id;
 
 
     private final String userName;
 
-    @JsonProperty("given_name")
+
     private final String givenName;
 
-    @JsonProperty("family_name")
     private final String lastName;
 
     private final String email;
@@ -33,6 +33,7 @@ class UserWrapper {
     private final Collection<String> roles;
 
     private final Collection<String> groups;
+
 
     public UserWrapper(UserModel model) {
         id = model.getId();
@@ -65,7 +66,44 @@ class UserWrapper {
 
     }
 
-    @JsonProperty(value = "preferred_username")
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UserWrapper that = (UserWrapper) o;
+        return Objects.equal(id, that.id) &&
+                Objects.equal(userName, that.userName) &&
+                Objects.equal(givenName, that.givenName) &&
+                Objects.equal(lastName, that.lastName) &&
+                Objects.equal(email, that.email) &&
+                Objects.equal(avatar, that.avatar) &&
+                Objects.equal(roles, that.roles) &&
+                Objects.equal(groups, that.groups);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, userName, givenName, lastName, email, avatar, roles, groups);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("userName", userName)
+                .add("givenName", givenName)
+                .add("lastName", lastName)
+                .add("email", email)
+                .add("avatar", avatar)
+                .add("roles", roles)
+                .add("groups", groups)
+                .toString();
+    }
+
     public String getUserName() {
         return userName;
     }

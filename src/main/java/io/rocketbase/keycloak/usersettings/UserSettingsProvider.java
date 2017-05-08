@@ -1,6 +1,7 @@
 package io.rocketbase.keycloak.usersettings;
 
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.services.managers.AppAuthManager;
 import org.keycloak.services.resource.RealmResourceProvider;
 
 /**
@@ -16,7 +17,7 @@ public class UserSettingsProvider implements RealmResourceProvider {
 
     @Override
     public Object getResource() {
-        return new UserSettingsResource(session);
+        return new UserSettingsResource(session, new AppAuthManager());
     }
 
     @Override

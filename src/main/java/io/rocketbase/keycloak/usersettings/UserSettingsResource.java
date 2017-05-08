@@ -20,13 +20,12 @@ public class UserSettingsResource {
     private final KeycloakSession session;
 
 
-    private final AuthenticationManager.AuthResult auth;
+    private final AppAuthManager authManager;
 
-    public UserSettingsResource(KeycloakSession session) {
+    public UserSettingsResource(KeycloakSession session, AppAuthManager authManager) {
         this.session = session;
-        this.auth = new AppAuthManager().authenticateBearerToken(session,
-                session.getContext()
-                        .getRealm());
+        this.authManager = authManager;
+
     }
 
 
@@ -34,8 +33,8 @@ public class UserSettingsResource {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public UserWrapper get(@PathParam("id") String id) {
-        checkAuth(auth, id);
-        return new UserWrapper(getUser(id));
+        authorize(authManager, id);
+        return new UserWrapper(getUserById(id));
     }
 
     @PUT
@@ -43,8 +42,9 @@ public class UserSettingsResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response put(@PathParam("id") String id, @FormParam("preferred_username") String userName, @FormParam("given_name") String firstName, @FormParam("family_name") String lastname,
                         @FormParam("email") String email, @FormParam("avatar") String avatar) {
-        checkAuth(auth, id);
-        UserModel user = getUser(id);
+        authorize(authManager, id);
+        validate(userName);
+        UserModel user = getUserById(id);
         user.setFirstName(firstName);
         user.setUsername(userName);
         user.setLastName(lastname);
@@ -54,19 +54,37 @@ public class UserSettingsResource {
                 .build();
     }
 
-    private void checkAuth(AuthenticationManager.AuthResult auth, String requestedId) {
+
+    private void authorize(AppAuthManager manager, String requestedId) {
+        AuthenticationManager.AuthResult auth = authManager.authenticateBearerToken(session,
+                session.getContext()
+                        .getRealm());
         if (auth == null) {
+            // will result in 401 response
             throw new NotAuthorizedException("Bearer");
         } else if (!requestedId.equals(auth.getUser()
                 .getId())) {
+            // will result in 403 response
             throw new org.keycloak.services.ForbiddenException("Wrong user");
         }
     }
 
+    private void validate(String username) {
+        if (getUserByName(username) != null) {
+            throw new ClientErrorException("Username must be unique", Response.Status.BAD_REQUEST);
+        }
+    }
 
-    private UserModel getUser(String id) {
+    private UserModel getUserById(String id) {
         return session.users()
                 .getUserById(id,
+                        session.getContext()
+                                .getRealm());
+    }
+
+    private UserModel getUserByName(String name) {
+        return session.users()
+                .getUserByUsername(name,
                         session.getContext()
                                 .getRealm());
     }
