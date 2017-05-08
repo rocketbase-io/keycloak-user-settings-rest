@@ -36,15 +36,16 @@ public class UserSettingsProvider implements RealmResourceProvider {
     }
 
     @GET
+
     @Path("{id}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String get(@PathParam("id") String id) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public UserWrapper get(@PathParam("id") String id) {
         UserModel user = session.users()
                 .getUserById(id,
                         session.getContext()
                                 .getRealm());
 
-        return user.getFirstName();
+        return new UserWrapper(user);
     }
 
 }
