@@ -43,7 +43,7 @@ public class UserSettingsResource {
     public Response put(@PathParam("id") String id, @FormParam("preferred_username") String userName, @FormParam("given_name") String firstName, @FormParam("family_name") String lastname,
                         @FormParam("email") String email, @FormParam("avatar") String avatar) {
         authorize(authManager, id);
-        validate(userName);
+        validate(id, userName);
         UserModel user = getUserById(id);
         user.setFirstName(firstName);
         user.setUsername(userName);
@@ -69,10 +69,14 @@ public class UserSettingsResource {
         }
     }
 
-    private void validate(String username) {
-        if (getUserByName(username) != null) {
+    private void validate(String id, String username) {
+        UserModel byId = getUserById(id);
+        UserModel byName = getUserByName(username);
+        if (byName != null && !byId.getId()
+                .equals(byName.getId())) {
             throw new ClientErrorException("Username must be unique", Response.Status.BAD_REQUEST);
         }
+
     }
 
     private UserModel getUserById(String id) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="3" failures="0" name="ProfileServiceTest" time="0.148" errors="0" skipped="0">
+<testsuite tests="3" failures="0" name="ProfileServiceTest" time="0.491" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib"/>
@@ -64,7 +64,7 @@
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="ProfileServiceTest" name="duplicateUserName" time="0.108"/>
-  <testcase classname="ProfileServiceTest" name="updateInfo" time="0.012"/>
-  <testcase classname="ProfileServiceTest" name="getInfo" time="0.028"/>
+  <testcase classname="ProfileServiceTest" name="duplicateUserName" time="0.389"/>
+  <testcase classname="ProfileServiceTest" name="updateInfo" time="0.026"/>
+  <testcase classname="ProfileServiceTest" name="getInfo" time="0.076"/>
 </testsuite>
