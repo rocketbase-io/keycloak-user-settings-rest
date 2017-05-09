@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server xmlns="urn:jboss:domain:4.0">
+    <profile>
+        <subsystem xmlns="urn:jboss:domain:keycloak-server:1.1">
+            <web-context>auth</web-context>
+            <providers>
+                <provider>classpath:${jboss.home.dir}/providers/*</provider>
+            </providers>
+        </subsystem>
+    </profile>
+</server>

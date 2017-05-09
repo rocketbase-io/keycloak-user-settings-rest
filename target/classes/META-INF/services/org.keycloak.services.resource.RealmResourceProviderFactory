@@ -1,3 +1,0 @@
-# Tell KeyCloak the Entry Point to your Extension
-
-io.rocketbase.keycloak.usersettings.UserSettingsProviderFactory
