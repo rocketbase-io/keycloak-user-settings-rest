@@ -30,15 +30,15 @@ public class ITProfileServiceUnauthorized {
 
     @Test
     public void doPostRequest() {
-        when().post(Config.SERVICE, new Object[]{})
+        when().post(Config.SERVICE + "/{id}", Config.USER_A_ID)
                 .then()
-                .statusCode(404);
+                .statusCode(405);
     }
 
     @Test
     public void doDeleteRequest() {
-        when().delete(Config.SERVICE, new Object[]{})
+        when().delete(Config.SERVICE + "/{id}", Config.USER_A_ID)
                 .then()
-                .statusCode(404);
+                .statusCode(405);
     }
 }

@@ -9,13 +9,12 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
-import java.util.logging.Logger;
 
 /**
  * Created by mirco on 05.05.17.
  */
 public class UserSettingsResource {
-    private final Logger logger = Logger.getLogger("UserSettingsResource");
+
 
     private final KeycloakSession session;
 
@@ -26,6 +25,20 @@ public class UserSettingsResource {
         this.session = session;
         this.authManager = authManager;
 
+    }
+
+    @POST
+    @Path("{id}")
+    public Response post() {
+        return Response.status(405)
+                .build();
+    }
+
+    @DELETE
+    @Path("{id}")
+    public Response delete() {
+        return Response.status(405)
+                .build();
     }
 
 
@@ -93,6 +106,7 @@ public class UserSettingsResource {
         }
 
     }
+
 
     private UserModel getUserById(String id) {
         return session.users()

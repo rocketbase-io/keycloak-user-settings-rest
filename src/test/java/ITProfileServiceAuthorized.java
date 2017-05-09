@@ -21,7 +21,7 @@ public class ITProfileServiceAuthorized {
     public void getBearer() throws IOException {
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(MediaType.parse("application/x-www-form-urlencoded; charset=utf-8"),
-                "grant_type=password&client_id=account&username=mirco1&password=mirco&client_secret=4ed92746-f74c-4813-945f-3fab61f74632");
+                "grant_type=password&client_id=account&username=test0r222&password=mirco&client_secret=4ed92746-f74c-4813-945f-3fab61f74632");
         Request req = new Request.Builder().post(body)
                 .url(Config.AUTH)
                 .build();
@@ -45,7 +45,7 @@ public class ITProfileServiceAuthorized {
                 .statusCode(200)
                 .body("givenName", is("Auth Test"))
                 .body("lastName", is("Testmann1"))
-                .body("userName", is("mirco1"))
+                .body("userName", is("test0r222"))
                 .body("email", is("test@test.testing"))
                 .body("avatar", is("test.png"));
     }
@@ -54,7 +54,7 @@ public class ITProfileServiceAuthorized {
     public void updateUserAndReset() {
         given().header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Authorization", "Bearer " + BEARER)
-                .body("given_name=Auth+Test+Updated&family_name=Testmann1+Updated&preferred_username=mirco1+Updated&email=test%40test.testing+Updated&avatar=test.png+Updated")
+                .body("given_name=Auth+Test+Updated&family_name=Testmann1+Updated&preferred_username=test0r222+Updated&email=test%40test.testing+Updated&avatar=test.png+Updated")
                 .when()
                 .put(Config.SERVICE + "/{id}", Config.USER_A_ID)
                 .then()
@@ -68,13 +68,13 @@ public class ITProfileServiceAuthorized {
                 .statusCode(200)
                 .body("givenName", is("Auth Test Updated"))
                 .body("lastName", is("Testmann1 Updated"))
-                .body("userName", is("mirco1 updated"))
+                .body("userName", is("test0r222 updated"))
                 .body("email", is("test@test.testing updated"))
                 .body("avatar", is("test.png Updated"));
 
         given().header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Authorization", "Bearer " + BEARER)
-                .body("given_name=Auth+Test&family_name=Testmann1&preferred_username=mirco1&email=test%40test.testing&avatar=test.png")
+                .body("given_name=Auth+Test&family_name=Testmann1&preferred_username=test0r222&email=test%40test.testing&avatar=test.png")
                 .when()
                 .put(Config.SERVICE + "/{id}", Config.USER_A_ID)
                 .then()
@@ -96,7 +96,7 @@ public class ITProfileServiceAuthorized {
     public void updateUserWithoutNameChangeAndReset() {
         given().header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Authorization", "Bearer " + BEARER)
-                .body("given_name=Auth+Test+Updated&family_name=Testmann1+Updated&preferred_username=mirco1&email=test%40test.testing+Updated&avatar=test.png+Updated")
+                .body("given_name=Auth+Test+Updated&family_name=Testmann1+Updated&preferred_username=test0r222&email=test%40test.testing+Updated&avatar=test.png+Updated")
                 .when()
                 .put(Config.SERVICE + "/{id}", Config.USER_A_ID)
                 .then()
@@ -111,13 +111,13 @@ public class ITProfileServiceAuthorized {
                 .statusCode(200)
                 .body("givenName", is("Auth Test Updated"))
                 .body("lastName", is("Testmann1 Updated"))
-                .body("userName", is("mirco1"))
+                .body("userName", is("test0r222"))
                 .body("email", is("test@test.testing updated"))
                 .body("avatar", is("test.png Updated"));
 
         given().header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Authorization", "Bearer " + BEARER)
-                .body("given_name=Auth+Test&family_name=Testmann1&preferred_username=mirco1&email=test%40test.testing&avatar=test.png")
+                .body("given_name=Auth+Test&family_name=Testmann1&preferred_username=test0r222&email=test%40test.testing&avatar=test.png")
                 .when()
                 .put(Config.SERVICE + "/{id}", Config.USER_A_ID)
                 .then()
@@ -142,7 +142,7 @@ public class ITProfileServiceAuthorized {
 
         given().header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Authorization", "Bearer " + BEARER)
-                .body("given_name=Auth+Test&family_name=Testmann1&preferred_username=mirco1&email=test%40test.testing&avatar=test.png")
+                .body("given_name=Auth+Test&family_name=Testmann1&preferred_username=test0r222&email=test%40test.testing&avatar=test.png")
                 .when()
                 .put(Config.SERVICE + "/" + Config.USER_B_ID)
                 .then()
