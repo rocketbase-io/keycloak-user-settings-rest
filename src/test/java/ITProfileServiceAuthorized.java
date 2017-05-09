@@ -17,13 +17,15 @@ public class ITProfileServiceAuthorized {
 
     private static String BEARER;
 
+    private final Config c = new Config();
+
     @Before
     public void getBearer() throws IOException {
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(MediaType.parse("application/x-www-form-urlencoded; charset=utf-8"),
                 "grant_type=password&client_id=account&username=test0r222&password=mirco&client_secret=4ed92746-f74c-4813-945f-3fab61f74632");
         Request req = new Request.Builder().post(body)
-                .url(Config.AUTH)
+                .url(c.AUTH)
                 .build();
         Response response = client.newCall(req)
                 .execute();
@@ -40,7 +42,7 @@ public class ITProfileServiceAuthorized {
         given().header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Authorization", "Bearer " + BEARER)
                 .when()
-                .get(Config.SERVICE + "/{id}", Config.USER_A_ID)
+                .get(c.SERVICE + "/{id}", c.USER_A_ID)
                 .then()
                 .statusCode(200)
                 .body("givenName", is("Auth Test"))
@@ -56,14 +58,14 @@ public class ITProfileServiceAuthorized {
                 .header("Authorization", "Bearer " + BEARER)
                 .body("given_name=Auth+Test+Updated&family_name=Testmann1+Updated&preferred_username=test0r222+Updated&email=test%40test.testing+Updated&avatar=test.png+Updated")
                 .when()
-                .put(Config.SERVICE + "/{id}", Config.USER_A_ID)
+                .put(c.SERVICE + "/{id}", c.USER_A_ID)
                 .then()
                 .statusCode(200);
 
         given().header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Authorization", "Bearer " + BEARER)
                 .when()
-                .get(Config.SERVICE + "/{id}", Config.USER_A_ID)
+                .get(c.SERVICE + "/{id}", c.USER_A_ID)
                 .then()
                 .statusCode(200)
                 .body("givenName", is("Auth Test Updated"))
@@ -76,7 +78,7 @@ public class ITProfileServiceAuthorized {
                 .header("Authorization", "Bearer " + BEARER)
                 .body("given_name=Auth+Test&family_name=Testmann1&preferred_username=test0r222&email=test%40test.testing&avatar=test.png")
                 .when()
-                .put(Config.SERVICE + "/{id}", Config.USER_A_ID)
+                .put(c.SERVICE + "/{id}", c.USER_A_ID)
                 .then()
                 .statusCode(200);
     }
@@ -87,7 +89,7 @@ public class ITProfileServiceAuthorized {
                 .header("Authorization", "Bearer " + BEARER)
                 .body("given_name=Auth+Test+Updated&family_name=Testmann1+Updated&preferred_username=testman&email=test%40test.testing+Updated&avatar=test.png+Updated")
                 .when()
-                .put(Config.SERVICE + "/{id}", Config.USER_A_ID)
+                .put(c.SERVICE + "/{id}", c.USER_A_ID)
                 .then()
                 .statusCode(400);
     }
@@ -98,7 +100,7 @@ public class ITProfileServiceAuthorized {
                 .header("Authorization", "Bearer " + BEARER)
                 .body("given_name=Auth+Test+Updated&family_name=Testmann1+Updated&preferred_username=test0r222&email=test%40test.testing+Updated&avatar=test.png+Updated")
                 .when()
-                .put(Config.SERVICE + "/{id}", Config.USER_A_ID)
+                .put(c.SERVICE + "/{id}", c.USER_A_ID)
                 .then()
                 .statusCode(200);
 
@@ -106,7 +108,7 @@ public class ITProfileServiceAuthorized {
         given().header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Authorization", "Bearer " + BEARER)
                 .when()
-                .get(Config.SERVICE + "/{id}", Config.USER_A_ID)
+                .get(c.SERVICE + "/{id}", c.USER_A_ID)
                 .then()
                 .statusCode(200)
                 .body("givenName", is("Auth Test Updated"))
@@ -119,7 +121,7 @@ public class ITProfileServiceAuthorized {
                 .header("Authorization", "Bearer " + BEARER)
                 .body("given_name=Auth+Test&family_name=Testmann1&preferred_username=test0r222&email=test%40test.testing&avatar=test.png")
                 .when()
-                .put(Config.SERVICE + "/{id}", Config.USER_A_ID)
+                .put(c.SERVICE + "/{id}", c.USER_A_ID)
                 .then()
                 .statusCode(200);
     }
@@ -130,7 +132,7 @@ public class ITProfileServiceAuthorized {
                 .header("Authorization", "Bearer " + BEARER)
                 .body("given_name=Auth+Test+Updated&family_name=Testmann1+Updated&email=test%40test.testing+Updated&avatar=test.png+Updated")
                 .when()
-                .put(Config.SERVICE + "/{id}", Config.USER_A_ID)
+                .put(c.SERVICE + "/{id}", c.USER_A_ID)
                 .then()
                 .statusCode(400);
     }
@@ -144,7 +146,7 @@ public class ITProfileServiceAuthorized {
                 .header("Authorization", "Bearer " + BEARER)
                 .body("given_name=Auth+Test&family_name=Testmann1&preferred_username=test0r222&email=test%40test.testing&avatar=test.png")
                 .when()
-                .put(Config.SERVICE + "/" + Config.USER_B_ID)
+                .put(c.SERVICE + "/" + c.USER_B_ID)
                 .then()
                 .statusCode(403);
 

@@ -8,11 +8,14 @@ import static io.restassured.RestAssured.when;
  */
 public class ITProfileServiceUnauthorized {
 
+
+    private final Config c = new Config();
+
     @Test
     public void getWithoutBearer() {
         given().header("Content-Type", "application/x-www-form-urlencoded")
                 .when()
-                .get(Config.SERVICE + "/{id}", Config.USER_A_ID)
+                .get(c.SERVICE + "/{id}", c.USER_A_ID)
                 .then()
                 .statusCode(401);
     }
@@ -22,7 +25,7 @@ public class ITProfileServiceUnauthorized {
         given().header("Content-Type", "application/x-www-form-urlencoded")
                 .body("given_name=Auth+Test+Updated&family_name=Testmann1+Updated&preferred_username=mirco1&email=test%40test.testing+Updated&avatar=test.png+Updated")
                 .when()
-                .put(Config.SERVICE + "/{id}", Config.USER_A_ID)
+                .put(c.SERVICE + "/{id}", c.USER_A_ID)
                 .then()
                 .statusCode(401);
 
@@ -30,14 +33,14 @@ public class ITProfileServiceUnauthorized {
 
     @Test
     public void doPostRequest() {
-        when().post(Config.SERVICE + "/{id}", Config.USER_A_ID)
+        when().post(c.SERVICE + "/{id}", c.USER_A_ID)
                 .then()
                 .statusCode(405);
     }
 
     @Test
     public void doDeleteRequest() {
-        when().delete(Config.SERVICE + "/{id}", Config.USER_A_ID)
+        when().delete(c.SERVICE + "/{id}", c.USER_A_ID)
                 .then()
                 .statusCode(405);
     }
