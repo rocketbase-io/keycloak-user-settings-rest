@@ -1,0 +1,52 @@
+{
+  "realm" : "demo",
+  "users" : [ {
+    "id" : "a0da83a0-7c8c-4d99-a16c-05612704f067",
+    "createdTimestamp" : 1493972536371,
+    "username" : "test0r222",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "Auth Test",
+    "lastName" : "Testmann",
+    "email" : "test@test.testing",
+    "attributes" : {
+      "test.png" : [ "test.png" ],
+      "avatar" : [ "test.png" ]
+    },
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "dNg/1qJ36fz03AqakbDqrqVWiBcO+bFviYXJALkq2gqGNweVQmNBGzc48U3hiXb4lThBTc8+6j/uvZ7CQ5cQWQ==",
+      "salt" : "J/zO/d4sghZYWnkZO+m8Bw==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1493972604013,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "manage-account", "view-profile" ]
+    },
+    "groups" : [ "/gruppe1", "/gruppe2" ]
+  }, {
+    "id" : "002cefe6-0bb5-4276-ab6e-bbd6143e8a14",
+    "createdTimestamp" : 1494229064687,
+    "username" : "testman",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "manage-account", "view-profile" ]
+    },
+    "groups" : [ ]
+  } ]
+}
