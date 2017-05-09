@@ -10,7 +10,7 @@ class Config {
     private final String host = getHost();
 
     private String getHost() {
-        String env = System.getenv("KEYCLOAK_SERVER_URI");
+        String env = "http://" + System.getenv("KEYCLOAK_SERVER_URI");
         if (env == null) {
             logger.info("No Env Variable, falling back to localhost");
             env = "http://localhost";
