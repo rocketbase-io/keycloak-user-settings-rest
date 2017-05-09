@@ -3,12 +3,13 @@
  */
 class Config {
 
-    // aus env
+
     private static final String host = getHost();
 
     private static String getHost() {
-        String env = System.getenv("KEYCLOAK_SERVER_URI");
+        String env = System.getenv("env.KEYCLOAK_SERVER_URI");
         if (env == null) {
+            System.err.println("No env variable found, using localhost");
             env = "http://localhost";
         }
         return env;
