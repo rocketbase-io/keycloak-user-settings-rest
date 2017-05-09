@@ -50,5 +50,5 @@ crashlytics-build.properties
 fabric.properties
 git
 
-target
+target/
 *.iml
