@@ -1,3 +1,7 @@
+# KeyCloak User Settings
+A provider which enables you to change user profiles via an endpoint.
+
+
 # Installation
 ```
 mvn clean install

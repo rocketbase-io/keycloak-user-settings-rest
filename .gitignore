@@ -52,3 +52,5 @@ git
 
 target/
 *.iml
+
+.DS_Store

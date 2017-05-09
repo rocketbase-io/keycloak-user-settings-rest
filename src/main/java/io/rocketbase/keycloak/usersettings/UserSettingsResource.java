@@ -54,7 +54,12 @@ public class UserSettingsResource {
                 .build();
     }
 
-
+    /**
+     * Checks if the user is authorized to perform the request. Responses with 401 if no bearer was provided / 403 if the ID of the logged in user is different from the called ID.
+     *
+     * @param manager
+     * @param requestedId id of the user to change
+     */
     private void authorize(AppAuthManager manager, String requestedId) {
         AuthenticationManager.AuthResult auth = authManager.authenticateBearerToken(session,
                 session.getContext()
@@ -69,7 +74,17 @@ public class UserSettingsResource {
         }
     }
 
+    /**
+     * Usernames must be uniqued and are required (KeyCloak constraint). Wraps the default 500 response to a more meaningful 400.
+     *
+     * @param id       the id
+     * @param username the new username
+     */
     private void validate(String id, String username) {
+        if (username == null || "".equals(username)) {
+            throw new ClientErrorException("Username is required", Response.Status.BAD_REQUEST);
+        }
+
         UserModel byId = getUserById(id);
         UserModel byName = getUserByName(username);
         if (byName != null && !byId.getId()
