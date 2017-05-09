@@ -1,7 +1,6 @@
 package io.rocketbase.keycloak.usersettings;
 
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.keycloak.models.GroupModel;
 import org.keycloak.models.RoleModel;
@@ -12,34 +11,36 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by mirco on 08.05.17.
+ * Wrapper for the GET request
  */
 public class UserWrapper {
 
-    private final String id;
+    private String id;
+
+    private String preferred_username;
 
 
-    private final String userName;
+    private String given_name;
 
+    private String family_name;
 
-    private final String givenName;
+    private String email;
 
-    private final String lastName;
+    private String avatar;
 
-    private final String email;
+    private Collection<String> roles;
 
-    private final String avatar;
+    private Collection<String> groups;
 
-    private final Collection<String> roles;
+    public UserWrapper() {
 
-    private final Collection<String> groups;
-
+    }
 
     public UserWrapper(UserModel model) {
         id = model.getId();
-        userName = model.getUsername();
-        givenName = model.getFirstName();
-        lastName = model.getLastName();
+        preferred_username = model.getUsername();
+        given_name = model.getFirstName();
+        family_name = model.getLastName();
         email = model.getEmail();
 
         roles = model.getRoleMappings()
@@ -76,9 +77,9 @@ public class UserWrapper {
         }
         UserWrapper that = (UserWrapper) o;
         return Objects.equal(id, that.id) &&
-                Objects.equal(userName, that.userName) &&
-                Objects.equal(givenName, that.givenName) &&
-                Objects.equal(lastName, that.lastName) &&
+                Objects.equal(preferred_username, that.preferred_username) &&
+                Objects.equal(given_name, that.given_name) &&
+                Objects.equal(family_name, that.family_name) &&
                 Objects.equal(email, that.email) &&
                 Objects.equal(avatar, that.avatar) &&
                 Objects.equal(roles, that.roles) &&
@@ -87,54 +88,76 @@ public class UserWrapper {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, userName, givenName, lastName, email, avatar, roles, groups);
+        return Objects.hashCode(id, preferred_username, given_name, family_name, email, avatar, roles, groups);
     }
+
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("userName", userName)
-                .add("givenName", givenName)
-                .add("lastName", lastName)
-                .add("email", email)
-                .add("avatar", avatar)
-                .add("roles", roles)
-                .add("groups", groups)
-                .toString();
+        return "UserWrapper{" +
+                "id='" + id + '\'' +
+                ", preferred_username='" + preferred_username + '\'' +
+                ", given_name='" + given_name + '\'' +
+                ", family_name='" + family_name + '\'' +
+                ", email='" + email + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", roles=" + roles +
+                ", groups=" + groups +
+                '}';
     }
 
-    public String getUserName() {
-        return userName;
+    public String getId() {
+        return id;
     }
 
-    public String getGivenName() {
-        return givenName;
+    public String getPreferred_username() {
+        return preferred_username;
     }
 
-    public String getLastName() {
-        return lastName;
+    public void setPreferred_username(String preferred_username) {
+        this.preferred_username = preferred_username;
+    }
+
+    public String getGiven_name() {
+        return given_name;
+    }
+
+    public void setGiven_name(String given_name) {
+        this.given_name = given_name;
+    }
+
+    public String getFamily_name() {
+        return family_name;
+    }
+
+    public void setFamily_name(String family_name) {
+        this.family_name = family_name;
     }
 
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getAvatar() {
         return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public Collection<String> getRoles() {
         return roles;
     }
 
+
     public Collection<String> getGroups() {
         return groups;
     }
 
-    public String getId() {
 
-
-        return id;
-    }
 }

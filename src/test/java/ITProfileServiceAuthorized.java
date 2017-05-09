@@ -12,12 +12,11 @@ import static org.hamcrest.Matchers.is;
 /**
  * Created by mirco on 09.05.17.
  */
-public class ITProfileServiceAuthorized {
+public class ITProfileServiceAuthorized extends AbstractKeycloakIT {
 
 
     private static String BEARER;
 
-    private final Config c = new Config();
 
     @Before
     public void getBearer() throws IOException {
@@ -25,7 +24,7 @@ public class ITProfileServiceAuthorized {
         RequestBody body = RequestBody.create(MediaType.parse("application/x-www-form-urlencoded; charset=utf-8"),
                 "grant_type=password&client_id=account&username=test0r222&password=mirco&client_secret=4ed92746-f74c-4813-945f-3fab61f74632");
         Request req = new Request.Builder().post(body)
-                .url(c.AUTH)
+                .url(AUTH)
                 .build();
         Response response = client.newCall(req)
                 .execute();
@@ -39,100 +38,136 @@ public class ITProfileServiceAuthorized {
     @Test
     public void getUserWithID() {
 
-        given().header("Content-Type", "application/x-www-form-urlencoded")
+        given()
                 .header("Authorization", "Bearer " + BEARER)
                 .when()
-                .get(c.SERVICE + "/{id}", c.USER_A_ID)
+                .get(SERVICE + "/{id}", USER_A_ID)
                 .then()
                 .statusCode(200)
-                .body("givenName", is("Auth Test"))
-                .body("lastName", is("Testmann1"))
-                .body("userName", is("test0r222"))
+                .body("given_name", is("Auth Test"))
+                .body("family_name", is("Testmann1"))
+                .body("preferred_username", is("test0r222"))
                 .body("email", is("test@test.testing"))
                 .body("avatar", is("test.png"));
     }
 
     @Test
     public void updateUserAndReset() {
-        given().header("Content-Type", "application/x-www-form-urlencoded")
+        String userAUpdated = new JSONObject()
+                .put("given_name", "Auth Test Updated")
+                .put("family_name", "Testmann1 Updated")
+                .put("preferred_username", "test0r222 Updated")
+                .put("email", "test@test.testing Updated")
+                .put("avatar", "test.png Updated")
+                .toString();
+
+
+        given().header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + BEARER)
-                .body("given_name=Auth+Test+Updated&family_name=Testmann1+Updated&preferred_username=test0r222+Updated&email=test%40test.testing+Updated&avatar=test.png+Updated")
+                .body(userAUpdated)
                 .when()
-                .put(c.SERVICE + "/{id}", c.USER_A_ID)
+                .put(SERVICE + "/{id}", USER_A_ID)
                 .then()
                 .statusCode(200);
 
-        given().header("Content-Type", "application/x-www-form-urlencoded")
+        given()
                 .header("Authorization", "Bearer " + BEARER)
                 .when()
-                .get(c.SERVICE + "/{id}", c.USER_A_ID)
+                .get(SERVICE + "/{id}", USER_A_ID)
                 .then()
                 .statusCode(200)
-                .body("givenName", is("Auth Test Updated"))
-                .body("lastName", is("Testmann1 Updated"))
-                .body("userName", is("test0r222 updated"))
+                .body("given_name", is("Auth Test Updated"))
+                .body("family_name", is("Testmann1 Updated"))
+                .body("preferred_username", is("test0r222 updated"))
                 .body("email", is("test@test.testing updated"))
                 .body("avatar", is("test.png Updated"));
 
-        given().header("Content-Type", "application/x-www-form-urlencoded")
+        given().header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + BEARER)
-                .body("given_name=Auth+Test&family_name=Testmann1&preferred_username=test0r222&email=test%40test.testing&avatar=test.png")
+                .body(USER_A_ORIGINAL)
                 .when()
-                .put(c.SERVICE + "/{id}", c.USER_A_ID)
+                .put(SERVICE + "/{id}", USER_A_ID)
                 .then()
                 .statusCode(200);
     }
 
     @Test
     public void changeNameToAlreadyExisting() {
-        given().header("Content-Type", "application/x-www-form-urlencoded")
+
+        String userAUpdated = new JSONObject()
+                .put("given_name", "Auth Test")
+                .put("family_name", "Testmann1")
+                .put("preferred_username", "test0r222")
+                .put("email", "test@test.testing")
+                .put("avatar", "test.png")
+                .toString();
+
+        given().header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + BEARER)
-                .body("given_name=Auth+Test+Updated&family_name=Testmann1+Updated&preferred_username=testman&email=test%40test.testing+Updated&avatar=test.png+Updated")
+                .body(userAUpdated)
                 .when()
-                .put(c.SERVICE + "/{id}", c.USER_A_ID)
+                .put(SERVICE + "/{id}", USER_A_ID)
                 .then()
                 .statusCode(400);
     }
 
     @Test
     public void updateUserWithoutNameChangeAndReset() {
-        given().header("Content-Type", "application/x-www-form-urlencoded")
+
+        String userAUpdated = new JSONObject()
+                .put("given_name", "Auth Test A")
+                .put("family_name", "testman B")
+                .put("preferred_username", "test0r222")
+                .put("email", "test@test.testing C")
+                .put("avatar", "test.png D")
+                .toString();
+
+        given().header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + BEARER)
-                .body("given_name=Auth+Test+Updated&family_name=Testmann1+Updated&preferred_username=test0r222&email=test%40test.testing+Updated&avatar=test.png+Updated")
+                .body(userAUpdated)
                 .when()
-                .put(c.SERVICE + "/{id}", c.USER_A_ID)
+                .put(SERVICE + "/{id}", USER_A_ID)
                 .then()
                 .statusCode(200);
 
 
-        given().header("Content-Type", "application/x-www-form-urlencoded")
+        given()
                 .header("Authorization", "Bearer " + BEARER)
                 .when()
-                .get(c.SERVICE + "/{id}", c.USER_A_ID)
+                .get(SERVICE + "/{id}", USER_A_ID)
                 .then()
                 .statusCode(200)
-                .body("givenName", is("Auth Test Updated"))
-                .body("lastName", is("Testmann1 Updated"))
+                .body("givenName", is("Auth Test A"))
+                .body("lastName", is("Testmann1 B"))
                 .body("userName", is("test0r222"))
-                .body("email", is("test@test.testing updated"))
-                .body("avatar", is("test.png Updated"));
+                .body("email", is("test@test.testing C"))
+                .body("avatar", is("test.png D"));
 
-        given().header("Content-Type", "application/x-www-form-urlencoded")
+        given().header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + BEARER)
-                .body("given_name=Auth+Test&family_name=Testmann1&preferred_username=test0r222&email=test%40test.testing&avatar=test.png")
+                .body(USER_A_ORIGINAL)
                 .when()
-                .put(c.SERVICE + "/{id}", c.USER_A_ID)
+                .put(SERVICE + "/{id}", USER_A_ID)
                 .then()
                 .statusCode(200);
     }
 
     @Test
     public void changeToEmptyUsername() {
-        given().header("Content-Type", "application/x-www-form-urlencoded")
+
+        String userAUpdated = new JSONObject()
+                .put("given_name", "Auth Test A")
+                .put("family_name", "testman B")
+                .put("preferred_username", "")
+                .put("email", "test@test.testing C")
+                .put("avatar", "test.png D")
+                .toString();
+
+        given().header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + BEARER)
-                .body("given_name=Auth+Test+Updated&family_name=Testmann1+Updated&email=test%40test.testing+Updated&avatar=test.png+Updated")
+                .body(userAUpdated)
                 .when()
-                .put(c.SERVICE + "/{id}", c.USER_A_ID)
+                .put(SERVICE + "/{id}", USER_A_ID)
                 .then()
                 .statusCode(400);
     }
@@ -142,11 +177,11 @@ public class ITProfileServiceAuthorized {
     public void changeOtherUser() {
 
 
-        given().header("Content-Type", "application/x-www-form-urlencoded")
+        given().header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + BEARER)
-                .body("given_name=Auth+Test&family_name=Testmann1&preferred_username=test0r222&email=test%40test.testing&avatar=test.png")
+                .body(USER_A_ORIGINAL)
                 .when()
-                .put(c.SERVICE + "/" + c.USER_B_ID)
+                .put(SERVICE + "/" + USER_B_ID)
                 .then()
                 .statusCode(403);
 

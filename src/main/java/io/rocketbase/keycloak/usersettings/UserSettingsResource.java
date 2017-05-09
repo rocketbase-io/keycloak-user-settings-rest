@@ -9,21 +9,22 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
+import java.util.logging.Logger;
 
 /**
  * Created by mirco on 05.05.17.
  */
 public class UserSettingsResource {
-
+    private final static Logger LOGGER = Logger.getLogger("UserSettingsResource");
 
     private final KeycloakSession session;
-
 
     private final AppAuthManager authManager;
 
     public UserSettingsResource(KeycloakSession session, AppAuthManager authManager) {
         this.session = session;
         this.authManager = authManager;
+
 
     }
 
@@ -52,17 +53,17 @@ public class UserSettingsResource {
 
     @PUT
     @Path("{id}")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response put(@PathParam("id") String id, @FormParam("preferred_username") String userName, @FormParam("given_name") String firstName, @FormParam("family_name") String lastname,
-                        @FormParam("email") String email, @FormParam("avatar") String avatar) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response put(@PathParam("id") String id, UserWrapper wrapper) {
+        LOGGER.info(wrapper.toString());
         authorize(authManager, id);
-        validate(id, userName);
+        validate(id, wrapper.getPreferred_username());
         UserModel user = getUserById(id);
-        user.setFirstName(firstName);
-        user.setUsername(userName);
-        user.setLastName(lastname);
-        user.setEmail(email);
-        user.setAttribute("avatar", Collections.singletonList(avatar));
+        user.setFirstName(wrapper.getGiven_name());
+        user.setUsername(wrapper.getPreferred_username());
+        user.setLastName(wrapper.getFamily_name());
+        user.setEmail(wrapper.getEmail());
+        user.setAttribute("avatar", Collections.singletonList(wrapper.getAvatar()));
         return Response.ok()
                 .build();
     }
@@ -94,16 +95,29 @@ public class UserSettingsResource {
      * @param username the new username
      */
     private void validate(String id, String username) {
+
+
+        LOGGER.info("isEditUsernameAllowed:" + session.getContext()
+                .getRealm()
+                .isEditUsernameAllowed());
         if (username == null || "".equals(username)) {
             throw new ClientErrorException("Username is required", Response.Status.BAD_REQUEST);
         }
 
         UserModel byId = getUserById(id);
+        LOGGER.info("Old username from user: " + byId.getUsername() + " | new user name: " + username);
+
         UserModel byName = getUserByName(username);
         if (byName != null && !byId.getId()
                 .equals(byName.getId())) {
             throw new ClientErrorException("Username must be unique", Response.Status.BAD_REQUEST);
         }
+        if (!session.getContext()
+                .getRealm()
+                .isEditUsernameAllowed() && !username.equals(byId.getUsername())) {
+            throw new ClientErrorException("Username can not be modified", Response.Status.BAD_REQUEST);
+        }
+
 
     }
 
