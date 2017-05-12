@@ -17,7 +17,11 @@ public class UserSettingsProvider implements RealmResourceProvider {
 
     @Override
     public Object getResource() {
-        return new UserSettingsResource(session, new AppAuthManager());
+
+        boolean changeUserNameAllowed = session.getContext()
+                .getRealm()
+                .isEditUsernameAllowed();
+        return new UserSettingsResource(session, new AppAuthManager(), changeUserNameAllowed);
     }
 
     @Override

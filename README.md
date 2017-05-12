@@ -2,7 +2,7 @@
 A provider which enables you to change user profiles via an endpoint.
 
 
-# Installation
+## Installation
 ```
 mvn clean install
 
@@ -12,3 +12,10 @@ mvn clean install
 ```
 
 Open ```{path to keycloak}/standalone/configuration/standalone.xml```, add: ```<provider>module:profile</provider>``` to the ```<providers>``` element.
+
+## About KeyCloak extensions
+
+The [offical documentation](https://keycloak.gitbooks.io/documentation/server_development/topics/extensions.html) only gives
+little information about how to develop an extension. Here are some points we found out during development:
+
+* you need to have a file called ``org.keycloak.services.resources.RealmResourceProviderFactory`` in the folder ``resources/META-INF.services``

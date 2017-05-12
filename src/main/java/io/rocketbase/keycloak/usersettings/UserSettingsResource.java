@@ -21,9 +21,12 @@ public class UserSettingsResource {
 
     private final AppAuthManager authManager;
 
-    public UserSettingsResource(KeycloakSession session, AppAuthManager authManager) {
+    private final boolean changeUserNameAllowed;
+
+    public UserSettingsResource(KeycloakSession session, AppAuthManager authManager, boolean changeUserNameAllowed) {
         this.session = session;
         this.authManager = authManager;
+        this.changeUserNameAllowed = changeUserNameAllowed;
 
 
     }
@@ -96,25 +99,16 @@ public class UserSettingsResource {
      */
     private void validate(String id, String username) {
 
-
-        LOGGER.info("isEditUsernameAllowed:" + session.getContext()
-                .getRealm()
-                .isEditUsernameAllowed());
         if (username == null || "".equals(username)) {
             throw new ClientErrorException("Username is required", Response.Status.BAD_REQUEST);
         }
-
         UserModel byId = getUserById(id);
-        LOGGER.info("Old username from user: " + byId.getUsername() + " | new user name: " + username);
-
         UserModel byName = getUserByName(username);
         if (byName != null && !byId.getId()
                 .equals(byName.getId())) {
             throw new ClientErrorException("Username must be unique", Response.Status.BAD_REQUEST);
         }
-        if (!session.getContext()
-                .getRealm()
-                .isEditUsernameAllowed() && !username.equals(byId.getUsername())) {
+        if (!changeUserNameAllowed && !username.equals(byId.getUsername())) {
             throw new ClientErrorException("Username can not be modified", Response.Status.BAD_REQUEST);
         }
 

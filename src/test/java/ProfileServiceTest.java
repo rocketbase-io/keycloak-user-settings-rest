@@ -1,7 +1,6 @@
 import io.rocketbase.keycloak.usersettings.UserSettingsResource;
 import io.rocketbase.keycloak.usersettings.UserWrapper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.keycloak.models.GroupModel;
@@ -30,7 +29,7 @@ import static org.powermock.api.mockito.PowerMockito.spy;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(UserSettingsResource.class)
-@Ignore
+
 public class ProfileServiceTest {
 
 
@@ -38,13 +37,15 @@ public class ProfileServiceTest {
 
     public static final String VALID_USERNAME = "neu";
 
-    UserSettingsResource res = spy(new UserSettingsResource(mock(KeycloakSession.class), mock(AppAuthManager.class)));
+    UserSettingsResource res;
 
     Map<String, UserModel> users = new HashMap<>();
 
 
     @Before
     public void init() throws Exception {
+        KeycloakSession session = mock(KeycloakSession.class);
+        res = spy(new UserSettingsResource(mock(KeycloakSession.class), mock(AppAuthManager.class), true));
         UserModel one = mockUser("1", "firstName", "lastName", "a@b.de", "one", Collections.emptySet(), Collections.emptySet());
         UserModel two = mockUser("2", "Zwei", "Two", "test@test.de", "two", Collections.emptySet(), Collections.emptySet());
 
@@ -81,6 +82,7 @@ public class ProfileServiceTest {
         UserWrapper wrapper = new UserWrapper(users.get("1"));
         wrapper.setPreferred_username(INVALID_USERNAME);
         res.put("1", wrapper);
+
     }
 
 
