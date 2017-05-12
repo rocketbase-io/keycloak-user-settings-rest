@@ -19,7 +19,6 @@ public class UserWrapper {
 
     private String preferred_username;
 
-
     private String given_name;
 
     private String family_name;
@@ -91,7 +90,6 @@ public class UserWrapper {
         return Objects.hashCode(id, preferred_username, given_name, family_name, email, avatar, roles, groups);
     }
 
-
     @Override
     public String toString() {
         return "UserWrapper{" +
@@ -108,6 +106,10 @@ public class UserWrapper {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getPreferred_username() {

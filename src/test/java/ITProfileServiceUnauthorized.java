@@ -13,7 +13,7 @@ public class ITProfileServiceUnauthorized extends AbstractKeycloakIT {
     public void getWithoutBearer() {
         given().header("Content-Type", "application/x-www-form-urlencoded")
                 .when()
-                .get(SERVICE + "/{id}", USER_A_ID)
+                .get(SERVICE + "/{id}", USER_A_NAME_CHANGE)
                 .then()
                 .statusCode(401);
     }
@@ -23,7 +23,7 @@ public class ITProfileServiceUnauthorized extends AbstractKeycloakIT {
         given().header("Content-Type", "application/json")
                 .body(USER_A_ORIGINAL)
                 .when()
-                .put(SERVICE + "/{id}", USER_A_ID)
+                .put(SERVICE + "/{id}", USER_A_NAME_CHANGE)
                 .then()
                 .statusCode(401);
 
@@ -31,14 +31,14 @@ public class ITProfileServiceUnauthorized extends AbstractKeycloakIT {
 
     @Test
     public void doPostRequest() {
-        when().post(SERVICE + "/{id}", USER_A_ID)
+        when().post(SERVICE + "/{id}", USER_A_NAME_CHANGE)
                 .then()
                 .statusCode(405);
     }
 
     @Test
     public void doDeleteRequest() {
-        when().delete(SERVICE + "/{id}", USER_A_ID)
+        when().delete(SERVICE + "/{id}", USER_A_NAME_CHANGE)
                 .then()
                 .statusCode(405);
     }

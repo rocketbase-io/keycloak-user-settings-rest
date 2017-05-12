@@ -3,11 +3,8 @@ import io.rocketbase.keycloak.usersettings.UserWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.keycloak.models.GroupModel;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.RoleModel;
-import org.keycloak.models.UserModel;
-import org.keycloak.services.managers.AppAuthManager;
+import org.keycloak.models.*;
+import org.keycloak.services.managers.AuthenticationManager;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -45,7 +42,12 @@ public class ProfileServiceTest {
     @Before
     public void init() throws Exception {
         KeycloakSession session = mock(KeycloakSession.class);
-        res = spy(new UserSettingsResource(mock(KeycloakSession.class), mock(AppAuthManager.class), true));
+        RealmModel realm = mock(RealmModel.class);
+        UserProvider userProvider = mock(UserProvider.class);
+
+        when(realm.isEditUsernameAllowed()).thenReturn(true);
+
+        res = spy(new UserSettingsResource(userProvider, mock(AuthenticationManager.AuthResult.class), realm));
         UserModel one = mockUser("1", "firstName", "lastName", "a@b.de", "one", Collections.emptySet(), Collections.emptySet());
         UserModel two = mockUser("2", "Zwei", "Two", "test@test.de", "two", Collections.emptySet(), Collections.emptySet());
 
@@ -54,24 +56,17 @@ public class ProfileServiceTest {
         users.put("one", one);
         users.put("two", two);
 
-        PowerMockito.doReturn(users.get("1"))
-                .when(res, "getUserById", "1");
 
-        PowerMockito.doReturn(users.get("2"))
-                .when(res, "getUserById", "2");
+        when(userProvider.getUserById("1", realm)).thenReturn(one);
+        when(userProvider.getUserById("2", realm)).thenReturn(two);
 
-        PowerMockito.doReturn(users.get("one"))
-                .when(res, "getUserByName", "one");
+        when(userProvider.getUserByUsername("one", realm)).thenReturn(one);
+        when(userProvider.getUserByUsername("two", realm)).thenReturn(two);
+        when(userProvider.getUserByUsername(VALID_USERNAME, realm)).thenReturn(null);
 
-        PowerMockito.doReturn(users.get("two"))
-                .when(res, "getUserByName", "two");
-
-
-        PowerMockito.doReturn(null)
-                .when(res, "getUserByName", VALID_USERNAME);
 
         PowerMockito.doNothing()
-                .when(res, "authorize", Mockito.any(), Mockito.anyString());
+                .when(res, "authorize", Mockito.anyString());
 
 
     }

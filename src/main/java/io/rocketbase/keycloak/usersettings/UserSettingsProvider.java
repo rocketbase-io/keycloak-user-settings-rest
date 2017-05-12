@@ -2,6 +2,7 @@ package io.rocketbase.keycloak.usersettings;
 
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.services.managers.AppAuthManager;
+import org.keycloak.services.managers.AuthenticationManager;
 import org.keycloak.services.resource.RealmResourceProvider;
 
 /**
@@ -17,11 +18,13 @@ public class UserSettingsProvider implements RealmResourceProvider {
 
     @Override
     public Object getResource() {
-
-        boolean changeUserNameAllowed = session.getContext()
-                .getRealm()
-                .isEditUsernameAllowed();
-        return new UserSettingsResource(session, new AppAuthManager(), changeUserNameAllowed);
+        AuthenticationManager.AuthResult auth = new AppAuthManager().authenticateBearerToken(session,
+                session.getContext()
+                        .getRealm());
+        return new UserSettingsResource(session.users(),
+                auth,
+                session.getContext()
+                        .getRealm());
     }
 
     @Override

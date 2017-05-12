@@ -1,6 +1,30 @@
 {
   "realm" : "demo",
   "users" : [ {
+    "id": "c821007b-5486-4311-b18f-fb3a2c33e434",
+    "createdTimestamp": 1494258626970,
+    "username": "mirco",
+    "enabled": true,
+    "totp": false,
+    "emailVerified": false,
+    "firstName": "Mirco",
+    "lastName": "Franzek",
+    "credentials": [],
+    "disableableCredentialTypes": [],
+    "requiredActions": [],
+    "realmRoles": [
+      "offline_access",
+      "uma_authorization"
+    ],
+    "clientRoles": {
+      "account": [
+        "manage-account",
+        "view-profile"
+      ]
+    },
+    "groups": []
+  },
+    {
     "id" : "a0da83a0-7c8c-4d99-a16c-05612704f067",
     "createdTimestamp" : 1493972536371,
     "username" : "test0r222",
@@ -8,7 +32,7 @@
     "totp" : false,
     "emailVerified" : false,
     "firstName" : "Auth Test",
-    "lastName" : "Testmann",
+      "lastName": "Testmann1",
     "email" : "test@test.testing",
     "attributes" : {
       "test.png" : [ "test.png" ],

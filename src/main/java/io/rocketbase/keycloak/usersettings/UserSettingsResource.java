@@ -1,8 +1,8 @@
 package io.rocketbase.keycloak.usersettings;
 
-import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
-import org.keycloak.services.managers.AppAuthManager;
+import org.keycloak.models.UserProvider;
 import org.keycloak.services.managers.AuthenticationManager;
 
 import javax.ws.rs.*;
@@ -17,16 +17,21 @@ import java.util.logging.Logger;
 public class UserSettingsResource {
     private final static Logger LOGGER = Logger.getLogger("UserSettingsResource");
 
-    private final KeycloakSession session;
 
-    private final AppAuthManager authManager;
+    private final AuthenticationManager.AuthResult auth;
 
-    private final boolean changeUserNameAllowed;
+    private final UserProvider userProvider;
 
-    public UserSettingsResource(KeycloakSession session, AppAuthManager authManager, boolean changeUserNameAllowed) {
-        this.session = session;
-        this.authManager = authManager;
-        this.changeUserNameAllowed = changeUserNameAllowed;
+    private final RealmModel realm;
+
+    private final Validator validator;
+
+    public UserSettingsResource(UserProvider userProvider, AuthenticationManager.AuthResult authManager, RealmModel realm) {
+        this.userProvider = userProvider;
+        this.auth = authManager;
+        this.realm = realm;
+        validator = new Validator(
+                userProvider, realm);
 
 
     }
@@ -50,8 +55,10 @@ public class UserSettingsResource {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public UserWrapper get(@PathParam("id") String id) {
-        authorize(authManager, id);
-        return new UserWrapper(getUserById(id));
+        authorize(id);
+        return new UserWrapper(userProvider
+                .getUserById(id,
+                        realm));
     }
 
     @PUT
@@ -59,14 +66,11 @@ public class UserSettingsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response put(@PathParam("id") String id, UserWrapper wrapper) {
         LOGGER.info(wrapper.toString());
-        authorize(authManager, id);
-        validate(id, wrapper.getPreferred_username());
-        UserModel user = getUserById(id);
-        user.setFirstName(wrapper.getGiven_name());
-        user.setUsername(wrapper.getPreferred_username());
-        user.setLastName(wrapper.getFamily_name());
-        user.setEmail(wrapper.getEmail());
-        user.setAttribute("avatar", Collections.singletonList(wrapper.getAvatar()));
+        wrapper.setId(id);
+        authorize(id);
+        validator.validate(wrapper);
+        updateUser(wrapper);
+
         return Response.ok()
                 .build();
     }
@@ -74,60 +78,37 @@ public class UserSettingsResource {
     /**
      * Checks if the user is authorized to perform the request. Responses with 401 if no bearer was provided / 403 if the ID of the logged in user is different from the called ID.
      *
-     * @param manager
      * @param requestedId id of the user to change
      */
-    private void authorize(AppAuthManager manager, String requestedId) {
-        AuthenticationManager.AuthResult auth = authManager.authenticateBearerToken(session,
-                session.getContext()
-                        .getRealm());
+    private void authorize(String requestedId) {
         if (auth == null) {
             // will result in 401 response
+            LOGGER.info("No Token");
             throw new NotAuthorizedException("Bearer");
         } else if (!requestedId.equals(auth.getUser()
                 .getId())) {
             // will result in 403 response
+            LOGGER.info("Wrong User");
             throw new org.keycloak.services.ForbiddenException("Wrong user");
         }
     }
 
-    /**
-     * Usernames must be uniqued and are required (KeyCloak constraint). Wraps the default 500 response to a more meaningful 400.
-     *
-     * @param id       the id
-     * @param username the new username
-     */
-    private void validate(String id, String username) {
+    private void updateUser(UserWrapper wrapper) {
+        UserModel user = userProvider
+                .getUserById(wrapper.getId(),
+                        realm);
 
-        if (username == null || "".equals(username)) {
-            throw new ClientErrorException("Username is required", Response.Status.BAD_REQUEST);
-        }
-        UserModel byId = getUserById(id);
-        UserModel byName = getUserByName(username);
-        if (byName != null && !byId.getId()
-                .equals(byName.getId())) {
-            throw new ClientErrorException("Username must be unique", Response.Status.BAD_REQUEST);
-        }
-        if (!changeUserNameAllowed && !username.equals(byId.getUsername())) {
-            throw new ClientErrorException("Username can not be modified", Response.Status.BAD_REQUEST);
+        if (realm.isVerifyEmail() && !user.getEmail()
+                .equals(wrapper.getEmail())) {
+            user.addRequiredAction(UserModel.RequiredAction.VERIFY_EMAIL);
         }
 
+        user.setFirstName(wrapper.getGiven_name());
+        user.setUsername(wrapper.getPreferred_username());
+        user.setLastName(wrapper.getFamily_name());
+        user.setEmail(wrapper.getEmail());
+        user.setAttribute("avatar", Collections.singletonList(wrapper.getAvatar()));
 
-    }
-
-
-    private UserModel getUserById(String id) {
-        return session.users()
-                .getUserById(id,
-                        session.getContext()
-                                .getRealm());
-    }
-
-    private UserModel getUserByName(String name) {
-        return session.users()
-                .getUserByUsername(name,
-                        session.getContext()
-                                .getRealm());
     }
 
 

@@ -18,4 +18,6 @@ Open ```{path to keycloak}/standalone/configuration/standalone.xml```, add: ```<
 The [offical documentation](https://keycloak.gitbooks.io/documentation/server_development/topics/extensions.html) only gives
 little information about how to develop an extension. Here are some points we found out during development:
 
-* you need to have a file called ``org.keycloak.services.resources.RealmResourceProviderFactory`` in the folder ``resources/META-INF.services``
+* you need to implement ``RealmResourceProviderFactory`` and `RealmResourceProviderFactory`` from ``org.keycloak.services.resource``
+* on start, a warning will appear that internal code is used (the said interfaces)
+* you need to have a file called ``org.keycloak.services.resources.RealmResourceProviderFactory`` in the folder ``resources/META-INF.services`` with the fully qualified name of your ``RealmResourceProviderFactory``
