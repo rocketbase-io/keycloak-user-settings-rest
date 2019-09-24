@@ -140,7 +140,7 @@
 
     </dependencies>
     <properties>
-        <keycloak-services.version>3.1.0.Final</keycloak-services.version>
+        <keycloak-services.version>7.0.0</keycloak-services.version>
     </properties>
 
     <build>
